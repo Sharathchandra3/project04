@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project04-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: project04
+  template:
+    metadata:
+      labels:
+        app: project04
+    spec:
+      containers:
+      - name: project04-container
+        image: 1sharathchandra/project04:latest  # or whatever VERSION_TAG
+        ports:
+        - containerPort: 8081
