@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: project4
-        image: 1sharathchandra/project4:tagname
+        image: 1sharathchandra/project4:latest
         ports:
         - containerPort: 80
 
