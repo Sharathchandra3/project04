@@ -7,6 +7,8 @@ pipeline {
         DOCKERHUB_CRED = 'dockerhub'
         GIT_REPO_URL = 'https://github.com/Sharathchandra3/project04.git'
         GIT_BRANCH = 'main'
+        AWS_REGION = 'ap-south-1'
+        EKS_CLUSTER_NAME = 'project04-eks'
     }
 
     stages {
@@ -55,12 +57,12 @@ pipeline {
 
         stage('Deploy to EKS') {
             steps {
-                withCredentials([
-                    file(credentialsId: 'k8s', variable: 'KUBECONFIG_FILE')
-                ]) {
+                withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
-                        kubectl --kubeconfig=$KUBECONFIG_FILE apply -f deployment.yml
-                        kubectl --kubeconfig=$KUBECONFIG_FILE rollout status deployment/project04-deployment --timeout=60s
+                        export AWS_DEFAULT_REGION=${AWS_REGION}
+                        aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER_NAME}
+                        kubectl apply -f deployment.yml
+                        kubectl rollout status deployment/project04-deployment --timeout=60s
                     '''
                 }
             }
