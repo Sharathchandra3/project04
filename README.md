@@ -29,7 +29,7 @@ A simple CI/CD pipeline to build a Docker image, push it to DockerHub, and deplo
 - `Dockerfile`: Nginx with custom static content
 - `index.html`: Static page
 - `deployment.yml`: Kubernetes Deployment + LoadBalancer Service
-- pipeline.sh: CI/CD Pipeline
+- `pipeline.sh`: CI/CD Pipeline
 
 ---
 
