@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: project4-service
+  name: project04-service
 spec:
   type: LoadBalancer
   selector:
