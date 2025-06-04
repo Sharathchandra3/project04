@@ -9,6 +9,8 @@ pipeline {
         GIT_BRANCH = 'main'
         AWS_REGION = 'ap-south-1'
         EKS_CLUSTER_NAME = 'project04-eks'
+        SLACK_CHANNEL = '#ci-cd-buildstatus'
+        SLACK_CRED_ID = 'slack'   // <-- Slack token credential ID here
     }
 
     stages {
@@ -65,6 +67,30 @@ pipeline {
                         kubectl rollout status deployment/project04-deployment --timeout=60s
                     '''
                 }
+            }
+        }
+    }
+
+    post {
+        success {
+            withCredentials([string(credentialsId: env.SLACK_CRED_ID, variable: 'SLACK_TOKEN')]) {
+                slackSend(
+                    channel: "${SLACK_CHANNEL}",
+                    color: 'good',
+                    message: "✅ *SUCCESS* | Project04 - Build #${env.BUILD_NUMBER} completed successfully.",
+                    tokenCredentialId: env.SLACK_CRED_ID
+                )
+            }
+        }
+
+        failure {
+            withCredentials([string(credentialsId: env.SLACK_CRED_ID, variable: 'SLACK_TOKEN')]) {
+                slackSend(
+                    channel: "${SLACK_CHANNEL}",
+                    color: 'danger',
+                    message: "❌ *FAILURE* | Project04 - Build #${env.BUILD_NUMBER} failed. Check Jenkins for details.",
+                    tokenCredentialId: env.SLACK_CRED_ID
+                )
             }
         }
     }
